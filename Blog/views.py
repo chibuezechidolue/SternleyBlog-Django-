@@ -1,5 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 def index_page(request):
-    return HttpResponse("how are you")
+    return render(request,"blog/index.html")
+
+def about_page(request):
+    return render(request,"blog/about.html")
+
+def contact_page(request):
+    return render(request,"blog/contact.html")
