@@ -11,6 +11,7 @@ def register_page(request):
         if form.is_valid():
             print('is valid')
             form.save()
+            return redirect('login-page')
 
     return render(request,'user/register.html',{'form':form})
 

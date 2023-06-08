@@ -2,12 +2,11 @@ import django
 from django.db import models
 # from django.contrib.auth.models import User
 from User.models import CustomUser
-from datetime import date
 
 class BlogPost(models.Model):
     title=models.CharField(max_length=1000)
     subtitle=models.CharField(max_length=250)
-    date=models.DateField()
+    date=models.DateField(auto_now=True)
     content=models.TextField()
     author=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     img_url=models.URLField()
