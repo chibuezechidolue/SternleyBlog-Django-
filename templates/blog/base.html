@@ -36,19 +36,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'home-page'%}">Home</a>
           </li>
-            <!-- {% if not current_user.is_authenticated  -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="">Login</a>
-          </li> -->
+             {% if not user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login'%}">Login</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'register-page'%}">Register</a>
           </li>
-        <!-- {%endif -->
-          <!-- {% if current_user.is_authenticated  -->
-          <!-- <li class="nav-item">
+          {% else%}
+          <li class="nav-item">
             <a class="nav-link" href="">Log Out</a>
-          </li> -->
-          <!-- {%endif -->
+          </li>
+          {%endif%}
     
           <li class="nav-item">
             <a class="nav-link" href="{% url 'about-page'%}">About</a>
