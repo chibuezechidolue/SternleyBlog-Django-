@@ -20,7 +20,7 @@
       <div class="col-lg-8 col-md-10 mx-auto">
         {% for post in all_posts %}
         <div class="post-preview">
-          <a href="">
+          <a href="{%url 'view-post-page' post_id=post.id%}">
             <h2 class="post-title">
               {{post.title}}
             </h2>
@@ -29,12 +29,13 @@
             </h3>
           </a>
           <p class="post-meta">Posted by
-            <a href="#">{{post.author.name}}</a>
+            <a href="#">{{post.author.first_name}}</a>
             on {{post.date}}
-            <!-- if current_user.id -->
+            {%if user.id == post.author.id %}
             <a href="">✘</a>
-            <!-- endif -->
+            {%endif%}
           
+            
           </p>
         </div>
         <hr>
@@ -42,11 +43,11 @@
 
 
         <!-- New Post -->
-        <!-- if current_user.id==1%} -->
+        {%if user.is_authenticated%}
         <div class="clearfix">
           <a class="btn btn-primary float-right" href="{%url 'create-post-page'%}">Create New Post</a>
         </div>
-        <!-- {%endif -->
+        {%endif%}
       </div>
     </div>
   </div>

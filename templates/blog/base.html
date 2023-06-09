@@ -45,7 +45,7 @@
           </li>
           {% else%}
           <li class="nav-item">
-            <a class="nav-link" href="">Log Out</a>
+            <a class="nav-link" href="{%url 'logout'%}">Log Out</a>
           </li>
           {%endif%}
     
@@ -94,7 +94,7 @@
             </a>
           </li>
         </ul>
-        <p class="copyright text-muted">Copyright &copy; Your Website 2020</p>
+        <p class="copyright text-muted">Copyright &copy; SternleyBlog {% now 'Y' %}</p>
       </div>
     </div>
   </div>

@@ -5,7 +5,8 @@ from Blog.models import BlogPost
 from User.models import CustomUser
 
 def index_page(request):
-    return render(request,"blog/index.html")
+    all_posts=BlogPost.objects.all()
+    return render(request,"blog/index.html",{'all_posts':all_posts})
 
 def about_page(request):
     return render(request,"blog/about.html")
@@ -27,3 +28,7 @@ def create_post(request):
         return redirect('home-page')
 
     return render(request, "blog/make-post.html", {"form":form})
+
+def view_post(request,post_id):
+    post=BlogPost.objects.get(id=post_id)
+    return render(request,'blog/post.html',{"post":post})
