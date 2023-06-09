@@ -1,4 +1,7 @@
 {%extends 'blog/base.html'%}
+{%load django_bootstrap5%}
+{%load tags%}
+
 {%block content%}
   <!-- Page Header -->
 <!-- {{ ckeditor.load() } -->
@@ -11,7 +14,7 @@
             <h1>{{post.title}}</h1>
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
-              <a href="#">{{post.author.name}}</a>
+              <a href="#">{{post.author.first_name}}</a>
               on {{post.date}}</span>
           </div>
         </div>
@@ -34,24 +37,30 @@
 
 
 <!--           Comments Area -->
+
           <form method="post">
-            <h5>Comment</h5>
-    <!-- {{ ckeditor.create() } -->
-    <input class="btn-primary" type="submit">
-          <div class="col-lg-12 col-md-10 mx-auto comment">
-
-
+            {%csrf_token%}
+           <h5>{%bootstrap_form form%}</h5>
+           {%bootstrap_button button_type='submit' content="Add Comment"%}
+          
+          </div>
+        </div>
+      </div>
+      
+    </form> 
+    
+          <div class="col-lg-8 col-md-10 mx-auto comment">
               <ul class="commentList">
-                  {%for comment in comments%}
+                  {%for comment in all_comments%}
                 <li>
-
                     <div class="commenterImage">
 
-                      <img src="{{comment.author.email|gravatar}"/>
+                      <img src="{{ comment.author.email | gravatar_url:150 }}">
                     </div>
+
                     <div class="commentText">
-                    {{comment.text|safe}}
-                      <p><span class="date sub-text">{{comment.author.name}}</span></p>
+                    {{comment.comment|safe}}
+                      <p><span class="date sub-text">comment by: {{comment.author.first_name}}</span></p>
                     </div>
                 </li>
                   {%endfor%}

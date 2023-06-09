@@ -1,8 +1,12 @@
 from turtle import title
 from django.shortcuts import redirect, render
-from Blog.forms import CreateBlogPost
-from Blog.models import BlogPost
+from Blog.forms import CreateBlogPost,CommentForm
+from Blog.models import BlogPost, Comments
 from User.models import CustomUser
+
+
+
+
 
 def index_page(request):
     all_posts=BlogPost.objects.all()
@@ -31,4 +35,13 @@ def create_post(request):
 
 def view_post(request,post_id):
     post=BlogPost.objects.get(id=post_id)
-    return render(request,'blog/post.html',{"post":post})
+    form=CommentForm()
+    all_comments=Comments.objects.all()
+    # avatar_url=gravatar_url(email=post.author.email,size=40)
+    if request.method=="POST":
+        form=CommentForm(request.POST)
+        if form.is_valid():
+            comment=Comments(comment=form.cleaned_data['comment'],author=request.user,post=post)
+            comment.save()
+        return redirect('view-post-page',post_id=post.id)
+    return render(request,'blog/post.html',{"post":post,"form":form,"all_comments":all_comments})
