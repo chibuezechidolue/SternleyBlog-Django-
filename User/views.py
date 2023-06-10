@@ -7,7 +7,7 @@ def register_page(request):
     
     if request.method=="POST":
         form=forms.UserRegisterForm(request.POST)
-        print('POSt')
+    
         if form.is_valid():
             print('is valid')
             form.save()

@@ -2,7 +2,13 @@ from turtle import title
 from django.shortcuts import redirect, render
 from Blog.forms import CreateBlogPost,CommentForm
 from Blog.models import BlogPost, Comments
-from User.models import CustomUser
+import smtplib
+import os
+from dotenv import load_dotenv
+from django.contrib import messages
+
+
+load_dotenv()
 
 
 
@@ -16,6 +22,20 @@ def about_page(request):
     return render(request,"blog/about.html")
 
 def contact_page(request):
+    if request.method=="POST":
+        content=request.POST
+        email=content.get('email')
+        name=content.get('name')
+        message=content.get('message')
+        phone=content.get('phone')
+        messages.add_message(request, messages.SUCCESS, "Your message was sent successfully")
+
+        with smtplib.SMTP_SSL('smtp.gmail.com') as connection:
+            connection.login(user=os.environ.get('SENDING_EMAIL'), password=os.environ.get('SENDING_EMAIL_PASSWORD'))
+            connection.sendmail(from_addr=os.environ.get('SENDING_EMAIL'),
+                                to_addrs = os.environ.get('RECEIVING_EMAIL'),
+                                msg = f'Subject:Message from portfolio website'f'\n\nName: {name}\nPhone: {phone}\nEmail: {email}\nMessage: {message}')
+        
     return render(request,"blog/contact.html")
 
 def create_post(request):
