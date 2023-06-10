@@ -36,7 +36,7 @@ def create_post(request):
 def view_post(request,post_id):
     post=BlogPost.objects.get(id=post_id)
     form=CommentForm()
-    all_comments=Comments.objects.all()
+    all_comments=Comments.objects.filter(post_id=post_id).all()
     # avatar_url=gravatar_url(email=post.author.email,size=40)
     if request.method=="POST":
         form=CommentForm(request.POST)
@@ -45,3 +45,9 @@ def view_post(request,post_id):
             comment.save()
         return redirect('view-post-page',post_id=post.id)
     return render(request,'blog/post.html',{"post":post,"form":form,"all_comments":all_comments})
+
+def author_posts(request,author_id):
+    posts=BlogPost.objects.filter(author_id=author_id).all()
+    print(posts)
+
+    return render(request,'blog/author-posts.html', {"posts":posts})

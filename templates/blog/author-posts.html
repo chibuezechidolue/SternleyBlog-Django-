@@ -1,25 +1,27 @@
-{%extends 'blog/base.html'%}
-{%block content%}
+{% extends 'blog/base.html' %}
+
+{% block content %}
 <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1470092306007-055b6797ca72?ixlib=rb-1.2.1&auto=format&fit=crop&w=668&q=80')">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>SternleyBlog</h1>
-            <span class="subheading">A collection of rational minded writters.</span>
+            <span class="subheading">All blog post made by:</span>
+            <h1>{{posts.first.author.first_name }} {{posts.first.author.last_name }}</h1>
           </div>
         </div>
       </div>
     </div>
   </header>
-
-  <!-- Main Content -->
-  <div class="container">
+<!-- Main Content -->
+<div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        {% for post in all_posts %}
+        {%for post in posts%}
+
         <div class="post-preview">
+
           <a href="{%url 'view-post-page' post_id=post.id%}">
             <h2 class="post-title">
               {{post.title}}
@@ -28,8 +30,7 @@
               {{post.subtitle}}
             </h3>
           </a>
-          <p class="post-meta">Posted by
-            <a href="{%url 'author-posts-page' author_id=post.author.id %}">{{post.author.first_name}}</a>
+          <p class="post-meta">Posted
             on {{post.date}}
             {%if user.id == post.author.id %}
             <a href="">✘</a>
@@ -43,13 +44,15 @@
 
 
         <!-- New Post -->
-        {%if user.is_authenticated%}
+        <!-- {%if user.is_authenticated%}
         <div class="clearfix">
           <a class="btn btn-primary float-right" href="{%url 'create-post-page'%}">Create New Post</a>
         </div>
-        {%endif%}
+        {%endif%} -->
       </div>
     </div>
   </div>
   <hr>
-  {%endblock content%}
+{% endblock content %}
+
+
