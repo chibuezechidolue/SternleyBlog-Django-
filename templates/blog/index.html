@@ -32,7 +32,7 @@
             <a href="{%url 'author-posts-page' author_id=post.author.id %}">{{post.author.first_name}}</a>
             on {{post.date}}
             {%if user.id == post.author.id %}
-            <a href="">✘</a>
+            <a href="">✘</a> <a class="btn " href="{%url 'edit-post-page' post_id=post.id%}">Edit</a>
             {%endif%}
           
             

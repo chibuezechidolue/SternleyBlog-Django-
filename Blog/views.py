@@ -1,6 +1,6 @@
 from turtle import title
 from django.shortcuts import redirect, render
-from Blog.forms import CreateBlogPost,CommentForm
+from Blog.forms import CreateBlogPost,CommentForm, EditBlogPost
 from Blog.models import BlogPost, Comments
 import smtplib
 import os
@@ -52,6 +52,18 @@ def create_post(request):
         return redirect('home-page')
 
     return render(request, "blog/make-post.html", {"form":form})
+
+def edit_post(request,post_id):
+    post=BlogPost.objects.get(id=post_id)
+    form=EditBlogPost(instance=post)
+    if request.method=="POST":
+        form=EditBlogPost(request.POST,instance=post)
+        if form.is_valid():
+            form.save()
+        return redirect('home-page')
+        
+        
+    return render(request,"blog/make-post.html",{"is_edit":True,"form":form})
 
 def view_post(request,post_id):
     post=BlogPost.objects.get(id=post_id)
