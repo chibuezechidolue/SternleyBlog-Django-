@@ -71,7 +71,7 @@
     padding:10px;
 }
 .specific{
-    color: black;
+    background-color: black;
     margin-left: 50px;
 }
 .content p{color:red;font-style:italic;font-family:'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;}

@@ -31,7 +31,7 @@
           <hr>
             {%if user.id == post.author.id%}
             <div class="clearfix">
-            <a class="btn btn-primary float-right" href="">Edit Post</a>
+            <a class="btn btn-primary float-right" href="{% url 'edit-post-page' post_id=post.id%}">Edit Post</a>
             </div>
               {%endif%}
 

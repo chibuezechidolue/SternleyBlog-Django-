@@ -61,9 +61,15 @@ def edit_post(request,post_id):
         if form.is_valid():
             form.save()
         return redirect('home-page')
-        
-        
     return render(request,"blog/make-post.html",{"is_edit":True,"form":form})
+
+def delete_post(request,post_id):
+    if request.method=="POST":
+        post=BlogPost.objects.get(id=post_id)
+        post.delete()
+        messages.add_message(request, messages.SUCCESS, "The post has been deleted")
+        return redirect('home-page')
+    return render(request,'blog/post_confirm_delete.html',{"post_id":post_id})
 
 def view_post(request,post_id):
     post=BlogPost.objects.get(id=post_id)

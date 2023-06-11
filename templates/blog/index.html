@@ -5,6 +5,15 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+          {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <div class="col-lg-8 col-md-10 mx-auto">
+              <p{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+            </div>
+              {% endfor %}
+          </ul>
+          {% endif %}
           <div class="site-heading">
             <h1>SternleyBlog</h1>
             <span class="subheading">A collection of rational minded writters.</span>
@@ -32,7 +41,7 @@
             <a href="{%url 'author-posts-page' author_id=post.author.id %}">{{post.author.first_name}}</a>
             on {{post.date}}
             {%if user.id == post.author.id %}
-            <a href="">✘</a> <a class="btn " href="{%url 'edit-post-page' post_id=post.id%}">Edit</a>
+            <a href="{%url 'delete-post-page' post_id=post.id%}">✘</a> <a class="btn " href="{%url 'edit-post-page' post_id=post.id%}">Edit</a>
             {%endif%}
           
             
