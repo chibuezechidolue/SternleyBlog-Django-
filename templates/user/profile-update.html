@@ -1,0 +1,16 @@
+{%extends 'blog/base.html'%} {%load django_bootstrap5%} {% load static%} 
+{{user.username}}'s Profile  
+{%block content%}
+<!-- <body class="specific"> -->
+  <form method="post" action="" enctype="multipart/form-data">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          {%csrf_token%} {%bootstrap_form user_form%} {%bootstrap_form profile_form%} 
+          {%bootstrap_button button_type='submit' content="Update"%}
+        </div>
+      </div>
+    </div>
+  </form>
+</body>
+  {%endblock content%}

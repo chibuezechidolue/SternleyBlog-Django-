@@ -1,0 +1,18 @@
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<body class="specific">
+    
+<br><br>
+<form action="" method="post">
+    {%csrf_token%}
+    <div>
+        <p>Are you sure you want to delete this post</p>
+    </div>
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a class="btn btn-primary" href="{% url 'view-post-page' post_id=post_id%}">No, Back to Post</a>
+</form>
+</body>
+
+{% endblock content %}

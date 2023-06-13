@@ -45,11 +45,15 @@
      
      {%bootstrap_form form%}
      {%bootstrap_button button_type='submit' content="LOGIN"%}
-    
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <p>Don't have an account?  <a class="btn btn-success" href="{%url 'register-page'%}">Register Now</a></p>
+        <a class="mleft text-primary" href="{%url 'password-reset'%}">forgot password?</a>
+      </div>
     </div>
   </div>
 </div>
 
 </form>
+
 
 {% endblock content %}

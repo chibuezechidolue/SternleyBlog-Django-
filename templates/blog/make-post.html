@@ -9,18 +9,18 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="page-heading">
-            <!-- {% if is_edit: % -->
+            {% if is_edit %}
             <h1>Edit Post</h1>
-            <!-- {% else: % -->
+            {% else %}
             <h1>New Post</h1>
-            <!-- {% endif  -->
+            {% endif %}
             <span class="subheading">You're going to make a great blog post!</span>
           </div>
         </div>
       </div>
     </div>
   </header>
-<form action="" method="post">
+<form action="" method="post" novalidate>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
