@@ -115,6 +115,7 @@ blockquote {
 .specific {
   background-color: black;
   margin-left: 50%;
+  margin-top: 100px;
 }
 
 .content p {

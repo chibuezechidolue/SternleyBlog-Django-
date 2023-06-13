@@ -125,6 +125,9 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+# Set Media files variables
+MEDIA_ROOT= os.path.join(BASE_DIR,"static/media")
+MEDIA_URL= "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -144,6 +147,6 @@ EMAIL_USE_SSL=True
 EMAIL_HOST_USER=os.environ.get('SENDING_EMAIL')
 EMAIL_HOST_PASSWORD=os.environ.get('SENDING_EMAIL_PASSWORD')
 
-
-SESSION_COOKIE_AGE = 180
+# inactive login sessison time limit
+SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True

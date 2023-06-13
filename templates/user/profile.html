@@ -1,0 +1,37 @@
+{%extends 'blog/base.html'%}
+{% load static%}
+{%block title%} {{user.username}}'s Profile  {%endblock title%}
+
+{%block content%}
+<body class="specific">
+<div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+<div>
+	<img class="prof_pic" src="{% static user.profile.image.url%}" alt="profile pic">
+</div>
+<br>
+<div>
+	Name: {{user.first_name.title}} {{user.last_name.title}} 
+</div>
+<br>
+
+<div>
+	Email: {{user.email}}
+</div>
+<br>
+
+<div>
+	Phone: {{user.phone_no}}
+</div>
+<br>
+
+<div>
+	Bio: {{user.profile.bio}}
+</div>
+<br>
+<div>
+	<a class="btn btn-primary" href="{%url 'profile-update'%}">edit profile</a>
+</div>
+        </div></div></div></body>
+{%endblock content%}

@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from User.models import CustomUser
+from User.models import CustomUser,Profile
 
 class UserRegisterForm(UserCreationForm):
     first_name=forms.CharField()
@@ -12,4 +12,12 @@ class UserRegisterForm(UserCreationForm):
         fields=['first_name','last_name','username','email','phone_no']
 
 
+class ProfileUdateForm(forms.ModelForm):
+    class Meta:
+        model=Profile
+        fields=['image','bio',]
 
+class UserUdateForm(forms.ModelForm):
+    class Meta:
+        model=CustomUser
+        fields=['username','email','phone_no']
