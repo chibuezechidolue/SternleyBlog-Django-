@@ -9,4 +9,3 @@ class UserConfig(AppConfig):
         import User.signals
 
 
-print(0.6<0.7)

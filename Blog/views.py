@@ -8,14 +8,18 @@ from dotenv import load_dotenv
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-
+from django.core.paginator import Paginator
 
 load_dotenv()
 
 
 def index_page(request):
     all_posts = BlogPost.objects.all()
-    return render(request, "blog/index.html", {"all_posts": all_posts})
+    # pagination of all_posts
+    paginator = Paginator(all_posts, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "blog/index.html", {"page_obj": page_obj})
 
 
 def about_page(request):
@@ -134,6 +138,9 @@ def view_post(request, post_id):
 
 def author_posts(request, author_id):
     posts = BlogPost.objects.filter(author_id=author_id).all()
-    print(posts)
-
-    return render(request, "blog/author-posts.html", {"posts": posts})
+        # pagination of all_posts
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, "blog/author-posts.html", {"page_obj": page_obj,"posts":posts})
