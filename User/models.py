@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from PIL import Image
 
 class CustomUser(AbstractUser):
-    phone_no=models.IntegerField()
+    phone_no=models.IntegerField(null=True)
     email=models.EmailField(unique=True)
    
 
@@ -20,7 +20,6 @@ class Profile(models.Model):
      def save(self, *args,**kwargs):
           super().save(*args,**kwargs)
           img=Image.open(self.image.path)
-          print(img.height,img.width)
           if img.height>300 or img.width>300:
                output_size=(300,300)
                img.thumbnail(output_size)
