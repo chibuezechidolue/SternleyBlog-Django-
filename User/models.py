@@ -1,12 +1,13 @@
-from email.mime import image
-from tkinter import Image
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from PIL import Image
 
+
+
 class CustomUser(AbstractUser):
     phone_no=models.IntegerField(null=True)
     email=models.EmailField(unique=True)
+
    
 
 class Profile(models.Model):

@@ -27,7 +27,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        {% for post in page_obj %}
+        {% for post in all_post %}
         <div class="post-preview">
           <a href="{%url 'view-post-page' post_id=post.id%}">
             <h2 class="post-title">
@@ -41,7 +41,7 @@
             <a href="{%url 'author-posts-page' author_id=post.author.id %}">{{post.author.first_name}}</a>
             on {{post.date}}
             {%if user.id == post.author.id %}
-            <a href="{%url 'delete-post-page' post_id=post.id%}">✘</a> <a class="btn " href="{%url 'edit-post-page' post_id=post.id%}">Edit</a>
+            <a href="{%url 'delete-post-page' pk=post.id%}">✘</a> <a class="btn " href="{%url 'edit-post-page' pk=post.id%}">Edit</a>
             {%endif%}
           
             

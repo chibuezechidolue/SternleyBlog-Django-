@@ -11,9 +11,9 @@
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="site-heading">
           <span class="subheading">All blog post made by:</span>
-          <h1>
-            {{posts.first.author.first_name }} {{posts.first.author.last_name }}
-          </h1>
+          {%for post in all_post|slice:":1"%}
+          <h3>{{post.author.first_name }} {{post.author.last_name }}</h3>
+          {%endfor%}
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-md-10 mx-auto">
-      {%for post in page_obj %}
+      {%for post in all_post %}
 
       <div class="post-preview">
         <a href="{%url 'view-post-page' post_id=post.id%}">
@@ -32,7 +32,7 @@
         </a>
         <p class="post-meta">
           Posted on {{post.date}} {%if user.id == post.author.id %}
-          <a href="">✘</a>
+          <a href="{%url 'delete-post-page' pk=post.id%}">✘</a>
           {%endif%}
         </p>
       </div>
@@ -48,27 +48,29 @@
     </div>
   </div>
 </div>
-<br><br><br>
+<br /><br /><br />
 <!-- pagination -->
 <div class="container">
   <div class="row">
-<div class="col-lg-2 col-md-10 mx-auto">
-<div class="pagination">
-  <span class="step-links">
-      {% if page_obj.has_previous %}
+    <div class="col-lg-2 col-md-10 mx-auto">
+      <div class="pagination">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
           <a href="?page=1">&laquo; first</a>
           <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
+          {% endif %}
 
-      <span class="current">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
+          <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
 
-      {% if page_obj.has_next %}
+          {% if page_obj.has_next %}
           <a href="?page={{ page_obj.next_page_number }}">next</a>
           <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-  </span>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
-</div></div></div>
 {% endblock content %}

@@ -1,5 +1,8 @@
 from django.db import models
 from User.models import CustomUser
+from django.urls import reverse
+
+global BlogPost
 
 
 class BlogPost(models.Model):
@@ -10,9 +13,13 @@ class BlogPost(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     img_url = models.URLField()
 
-    # comment=models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self) -> str:
         return self.subtitle
+
+
+# if success_url is not defined in the CreatePostView
+# def get_absolute_url(self):
+#     return reverse('home-page')
 
 
 class Comments(models.Model):

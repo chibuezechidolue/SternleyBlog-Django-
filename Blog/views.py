@@ -1,25 +1,26 @@
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from Blog.forms import CreateBlogPost, CommentForm, EditBlogPost
-from Blog.models import BlogPost, Comments
-import smtplib
+from django.shortcuts import get_object_or_404, redirect, render
+from Blog.forms import CommentForm
+from Blog.models import BlogPost,Comments
+from User.models import CustomUser
 import os
 from dotenv import load_dotenv
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.core.paginator import Paginator
+from django.views.generic import ListView,CreateView,DeleteView,UpdateView
+
+# from django.contrib.auth.mixins import LoginRequiredMixin
 
 load_dotenv()
 
 
-def index_page(request):
-    all_posts = BlogPost.objects.all()
-    # pagination of all_posts
-    paginator = Paginator(all_posts, 5)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    return render(request, "blog/index.html", {"page_obj": page_obj})
+
+class ListPostView(ListView):
+    model=BlogPost
+    template_name= "blog/index.html"
+    context_object_name="all_post"
+    ordering=['-date']
+    paginate_by = 5
+
 
 
 def about_page(request):
@@ -61,51 +62,32 @@ def contact_page(request):
     return render(request, "blog/contact.html")
 
 
-@login_required
-def create_post(request):
-    form = CreateBlogPost()
-    if request.method == "POST":
-        form = CreateBlogPost(request.POST)
-        if form.is_valid():
-            print("is valid")
-            form.save()
-            #     new_post=BlogPost(title=form.cleaned_data["title"],subtitle=form.cleaned_data["subtitle"],
-            #                   img_url=form.cleaned_data["img_url"],content=form.cleaned_data["content"],
-            #                   author=request.user
-            #                   )
-            # new_post.save()
-            return redirect("home-page")
 
-    return render(request, "blog/make-post.html", {"form": form})
+class CreatePostView( CreateView):
+    model=BlogPost
+    fields=["title", "subtitle", "img_url", "content"]
+    template_name="blog/make-post.html"
+    #if get_absolute_url is not defined in the BlogPost model
+    success_url="/"
+    
+    def form_valid(self,form):
+        form.instance.author=self.request.user
+        return super().form_valid(form)
 
 
-@login_required
-def edit_post(request, post_id):
-    # restrict non author
-    post = BlogPost.objects.get(id=post_id)
-    if not request.user.id == post.author.id:
-        return HttpResponse(status=403)
-    form = EditBlogPost(instance=post)
-    if request.method == "POST":
-        form = EditBlogPost(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-        return redirect("home-page")
-    return render(request, "blog/make-post.html", {"is_edit": True, "form": form})
+
+class PostUpdateView(UpdateView):
+    model=BlogPost
+    fields = ["title", "subtitle", "img_url", "content"]
+    success_url="/"
 
 
-@login_required
-def delete_post(request, post_id):
-    # restrict non author
-    post = BlogPost.objects.get(id=post_id)
-    if not request.user.id == post.author.id:
-        return HttpResponse(status=403)
-    if request.method == "POST":
-        post = BlogPost.objects.get(id=post_id)
-        post.delete()
-        messages.add_message(request, messages.SUCCESS, "The post has been deleted")
-        return redirect("home-page")
-    return render(request, "blog/post_confirm_delete.html", {"post_id": post_id})
+
+
+class DeletePostView(DeleteView):
+    model=BlogPost
+    template_name='blog/post_confirm_delete.html'
+    success_url= '/'
 
 
 def view_post(request, post_id):
@@ -135,12 +117,13 @@ def view_post(request, post_id):
         {"post": post, "form": form, "all_comments": all_comments},
     )
 
+class ListUserPostView(ListView):
+    model=BlogPost
+    template_name='blog/author-posts.html'
+    context_object_name="all_post"
+    paginate_by = 2
 
-def author_posts(request, author_id):
-    posts = BlogPost.objects.filter(author_id=author_id).all()
-        # pagination of all_posts
-    paginator = Paginator(posts, 5)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    def get_queryset(self):
+        author_id=get_object_or_404(CustomUser,id=self.kwargs.get('author_id'))
+        return BlogPost.objects.filter(author_id=author_id)
     
-    return render(request, "blog/author-posts.html", {"page_obj": page_obj,"posts":posts})
