@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.views.generic import ListView,CreateView,DeleteView,UpdateView
 
-# from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
 load_dotenv()
 
@@ -63,7 +63,7 @@ def contact_page(request):
 
 
 
-class CreatePostView( CreateView):
+class CreatePostView( LoginRequiredMixin, CreateView):
     model=BlogPost
     fields=["title", "subtitle", "img_url", "content"]
     template_name="blog/make-post.html"
@@ -76,18 +76,32 @@ class CreatePostView( CreateView):
 
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=BlogPost
     fields = ["title", "subtitle", "img_url", "content"]
     success_url="/"
 
+    def test_func(self):
+        post=self.get_object()
+        if self.request.user==post.author:
+            return True
+        else:
+            return False
 
 
 
-class DeletePostView(DeleteView):
+
+class DeletePostView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
     model=BlogPost
     template_name='blog/post_confirm_delete.html'
     success_url= '/'
+
+    def test_func(self):
+        post=self.get_object()
+        if self.request.user==post.author:
+            return True
+        else:
+            return False
 
 
 def view_post(request, post_id):
