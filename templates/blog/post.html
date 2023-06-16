@@ -4,9 +4,10 @@
 
 {%block content%}
   <!-- Page Header -->
-<!-- {{ ckeditor.load() } -->
+
   <header class="masthead" style="background-image: url('{{post.img_url}}')">
     <div class="overlay"></div>
+    
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
@@ -29,6 +30,7 @@
         <div class="col-lg-8 col-md-10 mx-auto">
             {{ post.content|safe }}
           <hr>
+
             {%if user.id == post.author.id%}
             <div class="clearfix">
             <a class="btn btn-primary float-right" href="{% url 'edit-post-page' pk=post.id%}">Edit Post</a>
@@ -51,7 +53,7 @@
     
           <div class="col-lg-8 col-md-10 mx-auto comment">
               <ul class="commentList">
-                  {%for comment in all_comments%}
+                  {%for comment in comments%}
                 <li>
                     <div class="commenterImage">
 

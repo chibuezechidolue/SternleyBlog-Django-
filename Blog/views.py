@@ -1,16 +1,15 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from Blog.forms import CommentForm
+from django.http import HttpRequest, HttpResponse
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect
+from Blog.forms import CommentForm, ContactForm
 from Blog.models import BlogPost,Comments
 from User.models import CustomUser
-import os
-from dotenv import load_dotenv
+from django.urls import reverse
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.views.generic import ListView,CreateView,DeleteView,UpdateView
+from django.views.generic import ListView,CreateView,DeleteView,UpdateView,TemplateView,FormView
 
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
-load_dotenv()
 
 
 
@@ -23,43 +22,20 @@ class ListPostView(ListView):
 
 
 
-def about_page(request):
-    return render(request, "blog/about.html")
+class AboutPage(TemplateView):
+    template_name="blog/about.html"
 
 
-def contact_page(request):
-    if request.method == "POST":
-        if request.POST:
-            content = request.POST
-            email = content.get("email")
-            name = content.get("name")
-            message = content.get("message")
-            phone = content.get("phone")
-            messages.add_message(
-                request, messages.SUCCESS, "Your message was sent successfully"
-            )
+class ContactPage(SuccessMessageMixin,FormView):
+    template_name="blog/contact.html"
+    form_class=ContactForm
+    success_url="/contact-me/"
+    success_message="Your message was sent successfully"
 
-            # with smtplib.SMTP_SSL("smtp.gmail.com") as connection:
-            #     connection.login(
-            #         user=os.environ.get("SENDING_EMAIL"),
-            #         password=os.environ.get("SENDING_EMAIL_PASSWORD"),
-            #     )
-            # send_mail(
-            #     from_addr=os.environ.get("SENDING_EMAIL"),
-            #     to_addrs=os.environ.get("RECEIVING_EMAIL"),
-            #     msg=f"Subject:Message from portfolio website"
-            #     f"\n\nName: {name}\nPhone: {phone}\nEmail: {email}\nMessage: {message}",
-            #     )
-            send_mail(
-                subject='Message from SternleyBlog',
-                message=f"\n\nName: {name}\nPhone: {phone}\nEmail: {email}\nMessage: {message}",
-                from_email=None,
-                recipient_list=[os.environ.get("RECEIVING_EMAIL"),],
-                
+    def form_valid(self, form):
+        form.send_email()
+        return super().form_valid(form)
 
-            )
-
-    return render(request, "blog/contact.html")
 
 
 
@@ -67,8 +43,8 @@ class CreatePostView( LoginRequiredMixin, CreateView):
     model=BlogPost
     fields=["title", "subtitle", "img_url", "content"]
     template_name="blog/make-post.html"
-    #if get_absolute_url is not defined in the BlogPost model
-    success_url="/"
+    #if get_absolute_url is not defined in the BlogPost model, use:
+    # success_url="/"
     
     def form_valid(self,form):
         form.instance.author=self.request.user
@@ -79,7 +55,8 @@ class CreatePostView( LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=BlogPost
     fields = ["title", "subtitle", "img_url", "content"]
-    success_url="/"
+    #if get_absolute_url is not defined in the BlogPost model, use:
+    # success_url="/view-post/<post_id>/"
 
     def test_func(self):
         post=self.get_object()
@@ -104,32 +81,44 @@ class DeletePostView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
             return False
 
 
-def view_post(request, post_id):
-    post = BlogPost.objects.get(id=post_id)
-    form = CommentForm()
-    all_comments = Comments.objects.filter(post_id=post_id).all()
-    # avatar_url=gravatar_url(email=post.author.email,size=40)
-    if request.method == "POST":
-        print("request.method")
-        form = CommentForm(request.POST)
+class ViewPost(CreateView):
+    model=Comments
+    # fields=['comment']
+    template_name="blog/post.html"
+    form_class=CommentForm
+
+    
+    def get_context_data(self, **kwargs):
+        context= super(ViewPost,self).get_context_data(**kwargs)
+        context['comments']=Comments.objects.filter(post_id=self.kwargs.get('post_id'))
+        context['post']=BlogPost.objects.get(id=self.kwargs.get('post_id'))
+        return context
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs) -> HttpResponse:
+        form = self.form_class(request.POST)
         if form.is_valid():
-            print("form.is_valid")
+            post=BlogPost.objects.get(id=self.kwargs.get('post_id'))
             try:
-                comment = Comments(
-                    comment=form.cleaned_data["comment"], author=request.user, post=post
-                )
+                comment=Comments(comment=form.cleaned_data.get('comment'),author=self.request.user, post=post)
                 comment.save()
+                return redirect('view-post-page',post_id=post.id)
             except ValueError:
                 messages.add_message(
                     request, messages.WARNING, "You have to log in first"
                 )
                 return redirect("login")
-        return redirect("view-post-page", post_id=post.id)
-    return render(
-        request,
-        "blog/post.html",
-        {"post": post, "form": form, "all_comments": all_comments},
-    )
+
+        else:
+            return self.render_to_response(
+              self.get_context_data(form=form))
+        
+
+    def get_success_url(self):
+        return reverse('view-post-page')
+    
+
+    
+
 
 class ListUserPostView(ListView):
     model=BlogPost

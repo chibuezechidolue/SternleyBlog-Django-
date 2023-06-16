@@ -15,11 +15,9 @@ class BlogPost(models.Model):
 
     def __str__(self) -> str:
         return self.subtitle
-
-
 # if success_url is not defined in the CreatePostView
-# def get_absolute_url(self):
-#     return reverse('home-page')
+    def get_absolute_url(self):
+        return reverse('view-post-page', kwargs={"post_id":self.pk})
 
 
 class Comments(models.Model):

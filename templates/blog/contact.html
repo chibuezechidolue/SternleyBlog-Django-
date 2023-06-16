@@ -1,4 +1,6 @@
 {% extends "blog/base.html" %}
+{%load django_bootstrap5%}
+
 
 {%block content%}
 
@@ -35,9 +37,19 @@
         <!-- Contact Form - Enter your email address on line 19 of the mail/contact_me.php file to make this form work. -->
         <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
         <!-- To use the contact form, your site must be on a live web host with PHP! The form will not work locally! -->
-        <form method="POST" action="{%url 'contact-page'%}" name="sentMessage" id="contactForm" >
-          {%csrf_token%}
-          <div class="control-group">
+        <form method="POST" action="" name="sentMessage" id="contactForm" novalidate>
+          <!-- <div class="container">
+            <div class="row">
+              <div class="col-lg-8 col-md-10 mx-auto"> -->
+                {%csrf_token%}
+               
+               {%bootstrap_form form%}
+               {%bootstrap_button button_type='submit' content="Send"%}
+              
+              <!-- </div>
+            </div>
+          </div> -->
+          <!-- <div class="control-group">
             <div class="form-group floating-label-form-group controls">
               <label>Name</label>
               <input type="text" name="name" class="form-control" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.">
@@ -72,7 +84,9 @@
         </form>
       </div>
     </div>
-  </div>
-
+  </div> -->
+</form></div>
+</div>
+</div>
   <hr>
 {%endblock content%}
